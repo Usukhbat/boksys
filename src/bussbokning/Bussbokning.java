@@ -10,15 +10,15 @@ package bussbokning;
  */
 import java.util.Scanner;
 public class Bussbokning {
-   
+   //Det här är main metoden som börjar koden. Den ger användaren 7 val. alla variabler sparas här.
     public static void main(String[] args) {
         int kontroll = 0;
-        int[] buss = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        int[] buss = {1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,1};
         String[] namnFör = {"a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"};
         String[] namnEfter = {"a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"};
         while (kontroll == 0){
             Scanner scan = new Scanner(System.in);
-            System.out.println("\nMeny");
+            System.out.println("\nMeny"); // alla valen
             System.out.println("1. Lägg till bokning");
             System.out.println("2. Visa innehåll");
             System.out.println("3. Beräkna vinst sålda biljetter");
@@ -28,29 +28,46 @@ public class Bussbokning {
             System.out.print("\nInput: ");
             int felKontroll = 0;
             int meny = scan.nextInt();
-                if (meny == 1){
-                    System.out.print("Ange förnamn: ");
-                    String förnamn = scan.next();
-                    System.out.print("Ange efternamn: ");
-                    String efternamn = scan.next();
-                    System.out.println("[aaaammdd]");
-                    System.out.print("Ange personnummer: ");
-                    int personNummer = scan.nextInt();
-                    System.out.print("Vilken plats vill du boka?(Välj mellan 1-21.): ");
-                    int stolNummer = scan.nextInt();
-                    stolNummer--;
-                    bokaStol(buss, personNummer, stolNummer, förnamn, efternamn, namnFör, namnEfter);
-                    felKontroll++;
+                if (meny == 1){ // första metoden när man vill boka en plats i bussen, jag börjar med att ta in personnummer, förnamn, efternamn.
+                    System.out.println("Vill du boka fönsterplats?(ja eller nej)");
+                    String svar = scan.next();
+                    if (svar.equalsIgnoreCase("ja")){
+                        System.out.print("Ange förnamn: ");
+                        String förnamn = scan.next();
+                        System.out.print("Ange efternamn: ");
+                        String efternamn = scan.next();
+                        System.out.println("[aaaammdd]");
+                        System.out.print("Ange personnummer: ");
+                        int personNummer = scan.nextInt();
+                        System.out.print("Vilken plats vill du boka? \nVälj mellan\n[1][]    [][4]\n[5][]    [][8]\n[9][]    [][12]\n[13][]  [][16]\n[17][][][][21]: ");
+                        int stolNummer = scan.nextInt();
+                        stolNummer--;
+                        bokaStolEtt(buss, personNummer, stolNummer, förnamn, efternamn, namnFör, namnEfter); // metoden för att boka plats
+                    }   
+                    if (svar.equalsIgnoreCase("nej")){
+                        System.out.print("Ange förnamn: ");
+                        String förnamn = scan.next();
+                        System.out.print("Ange efternamn: ");
+                        String efternamn = scan.next();
+                        System.out.println("[aaaammdd]");
+                        System.out.print("Ange personnummer: ");
+                        int personNummer = scan.nextInt();
+                        System.out.print("Vilken plats vill du boka? \nVälj mellan\n[][2]    [3][]\n[][6]    [7][]\n[][10]    [11][]\n[][14]  [15][]\n[][18][19][20][]: ");
+                        int stolNummer = scan.nextInt();
+                        stolNummer--;
+                        bokaStolTvå(buss, personNummer, stolNummer, förnamn, efternamn, namnFör, namnEfter); // metoden för att boka plats
+                    }   
+                    felKontroll++;                    
             }
-            if (meny == 2){
+            if (meny == 2){ // visar alla bokningar i bussen. antalstol() för att hitta platserna och lista() för att veta om dem är vuxen eller barn.
                 int antalStolar = antalStol(buss);
                 lista(buss);
                 System.out.println("Det finns "+antalStolar+" stolar kvar.");
                 felKontroll++;
             }
-            if (meny == 3){
+            if (meny == 3){ // hittavinst() för att hitta vinsten av alla bokningar, sedan tar jag kostanden och printar det
                 double vinst = hittaVinst(buss);
-                int vinstUngefär = (int)vinst+1;
+                int vinstUngefär = (int)vinst;
                 felKontroll++;
                 System.out.println("Vinsten är "+vinst+" kr. Ungefär "+vinstUngefär+" kr.");
             }
@@ -94,13 +111,13 @@ public class Bussbokning {
             }  
         }
     }
-   
-    static void bokaStol(int[] buss, int personNummer, int stolNummer, String förnamn, String efternamn, String[] namnFör, String[] namnEfter){
-        if (stolNummer < 21){
+   // Det här är själva metoden som används för att boka platser. denna är för att boka fönsterplatser
+    static void bokaStolEtt(int[] buss, int personNummer, int stolNummer, String förnamn, String efternamn, String[] namnFör, String[] namnEfter){
+        
             int nr = 0;
             for (int i = 0;i<buss.length;i++){
                 if (i == stolNummer){
-                    if (buss[i] == 0){
+                    if (buss[i] == 1){ // Efter att ha kollat att stolen passar stolnummret som man har valt, så komemr det att sätta in all data till arrays.
                         buss[i] = personNummer;
                         namnFör[i] = förnamn;
                         namnEfter[i] = efternamn;
@@ -108,27 +125,47 @@ public class Bussbokning {
                         System.out.println("Varsågod, du har bokat stol nr. "+nr+".");
                     }
                     else {
-                        System.out.println("Stolen är tagen, försök igen.");
+                        System.out.println("Stolen är otillgänglig, försök igen.");
                     }
                 }
             }
-        }
+        
     }
-   
+    // det här är för att boka normala platser som inte är fönsterplatser
+    static void bokaStolTvå(int[] buss, int personNummer, int stolNummer, String förnamn, String efternamn, String[] namnFör, String[] namnEfter){
+        
+            int nr = 0;
+            for (int i = 0;i<buss.length;i++){
+                if (i == stolNummer){
+                    if (buss[i] == 0){ // Efter att ha kollat att stolen passar stolnummret som man har valt, så komemr det att sätta in all data till arrays.
+                        buss[i] = personNummer;
+                        namnFör[i] = förnamn;
+                        namnEfter[i] = efternamn;
+                        nr= nr+i+1;
+                        System.out.println("Varsågod, du har bokat stol nr. "+nr+".");
+                    }
+                    else {
+                        System.out.println("Stolen är otillgänglig, försök igen.");
+                    }
+                }
+            }
+        
+    }
+   // det här kollar hur många stolar som är inte bokade
     static int antalStol(int[] buss){
         int antalStolar = 0;
         for (int i = 0; i<buss.length;i++) {
-            if (buss[i] == 0) {
+            if (buss[i] == 0 || buss[i] == 1) {
                 antalStolar++;
             }
         }
         return antalStolar;
     }
-   
+   // det här säger vilka stolar som är bokade redan, även om det var en vuxen eller barn som bokade
     static void lista(int[] buss){
         int[] lista = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         for (int i = 0; i<buss.length;i++){
-            if (buss[i] > 0){
+            if (buss[i] > 0 && buss[i] > 1){
                 int ålder = 20230400 - buss[i];
                 if (ålder < 180000){
                     lista[i] = 1;
@@ -150,13 +187,13 @@ public class Bussbokning {
             }
         }    
     }
-   
+   // denna metod räknar ut vinsten av alla bokningar, räknar även om det är barn, vuxen eller pensionär.
     static double hittaVinst(int[] buss){
         int antalPensionär = 0;
         int antalVuxna = 0;
         int antalBarn = 0;
-        for (int i = 0;i<buss.length;i++){
-            if (buss[i] > 0) {
+        for (int i = 0;i<buss.length;i++){// kollar genom alla stolar och ser ifall dem är bokade först och sedan deras ålder
+            if (buss[i] > 1) {
                 int ålder = 20230400 - buss[i];
                 if (ålder < 180000){
                     antalBarn++;
@@ -175,7 +212,7 @@ public class Bussbokning {
         double vinst = (vinstVuxna+ vinstBarn + vinstPensionär);
         return vinst;
     }
-   
+   // hitta bokning genom personnummer. denna metod. 
     static void hittaBokning1(int[] buss, int personNummer){
         int bokningKontroll = 0;
         for (int i = 0; i<buss.length;i++){
@@ -189,17 +226,17 @@ public class Bussbokning {
                 System.out.println("Det finns ingen bokning av det personnumret.");
         }
     }
-       
+       // hitta bokning genom namn. både efternamn och förnamn.
     static void hittaBokning2(String[] namnFör, String[] namnEfter, String namn){
         int bokningKontroll = 0;
         int nr = 0;
         for (int i = 0;i<namnFör.length;i++){
-            if (namnFör[i].equals(namn)){
+            if (namnFör[i].equalsIgnoreCase(namn)){
                 bokningKontroll++;
                 nr= nr+i+1;
                 System.out.println("Ja, bokningen av "+namnFör[i]+" finns vid stol "+nr+".");
             }
-            if (namnEfter[i].equals(namn)){
+            if (namnEfter[i].equalsIgnoreCase(namn)){
                 bokningKontroll++;
                 nr= nr+i+1;
                 System.out.println("Ja, bokningen av "+namnEfter[i]+" finns vid stol "+nr+".");
@@ -209,7 +246,7 @@ public class Bussbokning {
                 System.out.println("Det finns ingen bokning av det namnet.");
             }
     }
-   
+   // tar bort bokning genom personnummer
     static void taBortBokning1(int[] buss, int personNummer, String[] namnFör, String[] namnEfter){
         int bokningKontroll = 0;
         for (int i = 0;i<buss.length;i++) {
@@ -225,11 +262,11 @@ public class Bussbokning {
                 System.out.println("Det finns ingen bokning av det personnumret.");
             }
     }
-   
+   // metod för ta bort bokning genom namn förnamn eller efternamn
     static void taBortBokning2(int[] buss, String namn, String[] namnFör, String[] namnEfter){
         int bokningKontroll = 0;
         for (int i = 0;i<namnFör.length;i++) {
-            if (namnFör[i].equals(namn) || namnEfter[i].equals(namn)) {
+            if (namnFör[i].equalsIgnoreCase(namn) || namnEfter[i].equalsIgnoreCase(namn)) {
                 buss[i] = 0;
                 namnFör[i] = "a";
                 namnEfter[i] = "a";
